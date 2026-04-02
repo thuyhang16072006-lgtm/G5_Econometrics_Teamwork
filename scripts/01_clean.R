@@ -44,8 +44,8 @@ df <- df |> filter(C44 > 0, !is.na(C44))
 cat("Sau filter thu nhập:", nrow(df), "\n")
 
 # Bước 7: Vùng Đồng bằng Sông Hồng
-df <- df |> filter(Region == 1)
-cat("Sau filter vùng:", nrow(df), "\n")
+#df <- df |> filter(Region == 1)
+#cat("Sau filter vùng:", nrow(df), "\n")
 
 # Bước 8: C51 hợp lệ (chỉ giữ 1 và 2, loại 0/3/4)
 df <- df |> filter(C51 %in% c(1, 2))
@@ -132,3 +132,29 @@ print(summary(df$ln_wage))
 # ── 6. EXPORT ────────────────────────────────────────────────
 saveRDS(df, "data/processed/data_processed.rds")
 cat("\nXong! Đã export data_processed.rds\n")
+# _______________________________________________________________
+# 1. Biến re_entrant 
+df <- df |>
+  mutate(re_entrant = as.integer(
+    female == 1 & C5 >= 30 &
+      marital %in% c(1) &   # đã/đang có gia đình
+      exp <= 10
+  ))
+cat("Re-entrant N:", sum(df$re_entrant), "\n")
+
+# 2. Subsamples theo giới
+df_male   <- filter(df, female == 0)
+df_female <- filter(df, female == 1)
+
+# 3. Train/Test split 
+set.seed(123)
+train_idx <- sample(nrow(df), size = floor(0.7 * nrow(df)))
+df_train  <- df[ train_idx, ]
+df_test   <- df[-train_idx, ]
+
+# 4. Export 
+saveRDS(df_male,   "data/processed/df_male.rds")
+saveRDS(df_female, "data/processed/df_female.rds")
+saveRDS(df_train,  "data/processed/df_train.rds")
+saveRDS(df_test,   "data/processed/df_test.rds")
+cat("Đã export đủ 5 files processed!\n")
