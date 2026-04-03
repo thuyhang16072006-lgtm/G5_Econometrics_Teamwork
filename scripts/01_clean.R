@@ -43,10 +43,6 @@ cat("Sau filter trình độ:", nrow(df), "\n")
 df <- df |> filter(C44 > 0, !is.na(C44))
 cat("Sau filter thu nhập:", nrow(df), "\n")
 
-# Bước 7: Vùng Đồng bằng Sông Hồng
-df <- df |> filter(Region == 1)
-cat("Sau filter vùng:", nrow(df), "\n")
-
 # Bước 8: C51 hợp lệ (chỉ giữ 1 và 2, loại 0/3/4)
 df <- df |> filter(C51 %in% c(1, 2))
 cat("Sau filter C51:", nrow(df), "\n")
