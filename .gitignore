@@ -19,3 +19,5 @@ Thumbs.db
 .RData
 .Ruserdata
 data/raw/LFS_2018.csv
+*.csv
+*.rds
