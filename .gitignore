@@ -1,2 +1,14 @@
+# Data
+data/
 
-.Rproj.user
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Output
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

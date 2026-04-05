@@ -43,10 +43,13 @@ cat("Sau filter trình độ:", nrow(df), "\n")
 df <- df |> filter(C44 > 0, !is.na(C44))
 cat("Sau filter thu nhập:", nrow(df), "\n")
 
+<<<<<<< HEAD
 # Bước 7: Vùng Đồng bằng Sông Hồng
 #df <- df |> filter(Region == 1)
 #cat("Sau filter vùng:", nrow(df), "\n")
 
+=======
+>>>>>>> 74326e379d7678687c98c358fbe6d0ac646f10af
 # Bước 8: C51 hợp lệ (chỉ giữ 1 và 2, loại 0/3/4)
 df <- df |> filter(C51 %in% c(1, 2))
 cat("Sau filter C51:", nrow(df), "\n")
@@ -132,6 +135,7 @@ print(summary(df$ln_wage))
 # ── 6. EXPORT ────────────────────────────────────────────────
 saveRDS(df, "data/processed/data_processed.rds")
 cat("\nXong! Đã export data_processed.rds\n")
+<<<<<<< HEAD
 # _______________________________________________________________
 # 1. Biến re_entrant 
 df <- df |>
@@ -158,3 +162,5 @@ saveRDS(df_female, "data/processed/df_female.rds")
 saveRDS(df_train,  "data/processed/df_train.rds")
 saveRDS(df_test,   "data/processed/df_test.rds")
 cat("Đã export đủ 5 files processed!\n")
+=======
+>>>>>>> 74326e379d7678687c98c358fbe6d0ac646f10af
