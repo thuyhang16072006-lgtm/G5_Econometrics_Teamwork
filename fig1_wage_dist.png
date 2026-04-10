@@ -1,0 +1,44 @@
+library(ggplot2)
+library(dplyr)
+
+# Tạo biến label cho dễ đọc
+df_plot <- df %>%
+  mutate(
+    mismatch_label = ifelse(mismatch == 1, "Mismatched", "Matched"),
+    gender = ifelse(female == 1, "Female", "Male")
+  )
+
+# Vẽ biểu đồ
+ggplot(df_plot, aes(x = ln_wage, fill = mismatch_label)) +
+  
+  # Histogram (density scale để match với density curve)
+  geom_histogram(aes(y = ..density..),
+                 bins = 30,
+                 alpha = 0.4,
+                 position = "identity") +
+  
+  # Kernel density
+  geom_density(alpha = 0.7, size = 1) +
+  
+  # Chia panel theo giới tính
+  facet_wrap(~ gender) +
+  
+  # Màu sắc
+  scale_fill_manual(values = c("Matched" = "#1f77b4", 
+                               "Mismatched" = "#d62728")) +
+  
+  # Labels
+  labs(
+    title = "Distribution of Log Wages (ln_wage)",
+    subtitle = "By Mismatch Status and Gender",
+    x = "Log Wage (ln_wage)",
+    y = "Density",
+    fill = "Mismatch Status"
+  ) +
+  
+  # Theme đẹp hơn
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = "top",
+    strip.text = element_text(face = "bold")
+  )
