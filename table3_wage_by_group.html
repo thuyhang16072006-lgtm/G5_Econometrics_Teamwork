@@ -1,0 +1,44 @@
+library(dplyr)
+
+final_table <- df %>%
+  mutate(
+    group = case_when(
+      re_entrant == 1 ~ "Re-entrant",
+      female == 0 ~ "Male",
+      female == 1 & re_entrant == 0 ~ "Female other"
+    )
+  ) %>%
+  group_by(group, mismatch) %>%
+  summarise(
+    N = n(),
+    mean_lnwage = mean(ln_wage, na.rm = TRUE),
+    sd_lnwage = sd(ln_wage, na.rm = TRUE),
+    pct_mismatch = mean(mismatch) * 100,
+    .groups = "drop"
+  ) %>%
+  left_join(
+    df %>%
+      mutate(
+        group = case_when(
+          re_entrant == 1 ~ "Re-entrant",
+          female == 0 ~ "Male",
+          female == 1 & re_entrant == 0 ~ "Female other"
+        )
+      ) %>%
+      group_by(group) %>%
+      summarise(
+        p_value = ifelse(
+          n_distinct(mismatch) == 2,
+          t.test(ln_wage ~ mismatch)$p.value,
+          NA
+        ),
+        .groups = "drop"
+      ),
+    by = "group"
+  ) %>%
+  mutate(
+    mismatch = ifelse(mismatch == 1, "Mismatched", "Matched")
+  ) %>%
+  arrange(group, mismatch)
+
+View(final_table)
