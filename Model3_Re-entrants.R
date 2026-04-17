@@ -22,15 +22,14 @@ df_train <- readRDS("data/processed/df_train.rds")
 # ================================
 # 3. CLEAN DATA
 # ================================
-names(df_train) <- make.names(names(df_train), unique = TRUE)
+#names(df_train) <- make.names(names(df_train), unique = TRUE)
 
 # ================================
 # 4. CREATE VARIABLES
 # ================================
 df_train <- df_train %>%
   mutate(
-    age = exp + schooling + 6,
-    mismatch_exp = mismatch * exp
+    age = exp + schooling + 6
   )
 
 # ================================
