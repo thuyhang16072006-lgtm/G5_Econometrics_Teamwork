@@ -5,19 +5,11 @@ library(sandwich)
 library(car)
 library(dplyr)
 
-df_train     <- readRDS("data/processed/df_train.rds")
-df_test      <- readRDS("data/processed/df_test.rds")
-df_male      <- readRDS("data/processed/df_male.rds")
-df_reentrant <- readRDS("data/processed/df_reentrant.rds")
+df_train <- readRDS("data/processed/df_train.rds")
 
-train_male      <- df_train |> filter(female == 0)
-train_reentrant <- df_train |> filter(re_entrant == 1)
+cat("df_train total obs:", nrow(df_train), "\n")
 
-cat("df_train        :", nrow(df_train), "\n")
-cat("train_male      :", nrow(train_male), "\n")
-cat("train_reentrant :", nrow(train_reentrant), "\n")
-
-f_baseline <- ln_wage ~ mismatch + 
+f_baseline <- ln_wage ~ mismatch +
   edu_level + urban + marital +
   factor(sector) + factor(industry_sub)
 
