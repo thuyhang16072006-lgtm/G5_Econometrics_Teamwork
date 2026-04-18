@@ -8,7 +8,7 @@
 # ── 1. PACKAGES ──────────────────────────────────────────────
 packages <- c(
   # Data I/O
-  "haven",            # đọc file .csv (Stata) — dùng read.csv()
+  "haven",            # haven — đọc file .dta (Stata), .sav (SPSS)
   "tidyverse",        # dplyr, ggplot2, tidyr, readr, purrr
   
   # Regression & inference
