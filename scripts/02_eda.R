@@ -105,13 +105,13 @@ cat("✓ Table 1 done\n")
 # ============================================================================ #
 
 table2_data <- df %>%
+  mutate(mismatch_f = factor(mismatch)) %>%   # cast trước để t.test không warning
   group_by(female) %>%
-  mutate(mismatch_f = factor(mismatch))
   summarise(
     wage_matched    = mean(wage_monthly[mismatch == 0], na.rm = TRUE),
     wage_mismatched = mean(wage_monthly[mismatch == 1], na.rm = TRUE),
     pct_mismatch    = mean(mismatch == 1, na.rm = TRUE) * 100,
-    p_val           = t.test(wage_monthly ~ mismatch,
+    p_val           = t.test(wage_monthly ~ mismatch_f,
                              data = pick(everything()))$p.value,
     .groups = "drop"
   ) %>%
