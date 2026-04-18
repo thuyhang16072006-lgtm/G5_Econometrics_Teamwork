@@ -74,15 +74,16 @@ df <- df |>
     
     # ── Demographics ─────────────────────────────────────────
     female       = as.integer(C3 == 2),   # 1 = female
-    marital      = as.integer(C9 == 2),   # 1 = currently married (C9 kept raw below)
+    marital      = as.integer(C9 == 2),   # 1 = currently married
     
     # ── Education → years of schooling ───────────────────────
     # C17: 7 = College (CĐ), 8 = University (ĐH), 9 = Postgraduate
+    # FIX: dùng TRUE ~ thay .default (tương thích dplyr < 1.1.0)
     schooling = case_when(
       C17 == 7 ~ 14,
       C17 == 8 ~ 16,
       C17 == 9 ~ 18,
-      .default  = NA_real_
+      TRUE     ~ NA_real_
     ),
     
     # ── Mincer experience ────────────────────────────────────
@@ -94,10 +95,11 @@ df <- df |>
     industry_sub = vsic2,                 # VSIC 2-digit (10–33)
     edu_level    = C17,
     
+    # FIX: dùng TRUE ~ thay .default (tương thích dplyr < 1.1.0)
     sector = case_when(
       C31 %in% 7:10 ~ "state",
       C31 == 11     ~ "fdi",
-      .default      ~ "private"
+      TRUE          ~ "private"
     ),
     
     # ── Interaction terms ────────────────────────────────────
@@ -160,17 +162,17 @@ df <- df |>
     re_entrant,
     
     # Raw source variables (robustness checks & verification)
-    C5,    # age — used in re-entrant filter & summary stats
-    C9,    # raw marital status — used in 05_robust.R
-    C17,   # raw education code — robustness A1
-    schooling,     # years of schooling (14/16/18) — robustness A1
-    C30C,  # VSIC 4-digit — used to verify industry_sub
-    C31,   # establishment type — verify sector
-    C35,   # employment status — verify wage-worker filter
-    C44,   # raw monthly wage (thousand VND)
-    C46,   # usual hours worked — robustness A4 (full-time filter)
-    C51,   # raw mismatch indicator — verify mismatch
-    vsic2, # VSIC 2-digit (= industry_sub, kept for cross-check)
+    C5,        # age — used in re-entrant filter & summary stats
+    C9,        # raw marital status — used in 05_robust.R
+    C17,       # raw education code — robustness A1
+    schooling, # years of schooling (14/16/18) — robustness A1
+    C30C,      # VSIC 4-digit — used to verify industry_sub
+    C31,       # establishment type — verify sector
+    C35,       # employment status — verify wage-worker filter
+    C44,       # raw monthly wage (thousand VND)
+    C46,       # usual hours worked — robustness A4 (full-time filter)
+    C51,       # raw mismatch indicator — verify mismatch
+    vsic2,     # VSIC 2-digit (= industry_sub, kept for cross-check)
     
     # Survey weight (for weighted regressions if needed)
     Cal_weigh,
