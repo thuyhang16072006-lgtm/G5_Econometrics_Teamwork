@@ -1,4 +1,3 @@
-
 # ============================================================
 # 04_margins.R — Marginal Effects · M3 Full Model
 # Project: Horizontal Mismatch & Wage Penalty · LFS 2018
@@ -16,8 +15,7 @@ library(sandwich)
 library(lmtest)
 
 # ── 1. LOAD ──────────────────────────────────────────────────
-m3_obj   <- readRDS("data/processed/m3.rds")
-m3       <- m3_obj$m3          # lm object
+m3 <- readRDS("data/processed/m3.rds")        
 df_train <- readRDS("data/processed/df_train.rds")
 
 cat("====================================\n")
@@ -74,8 +72,8 @@ me_table <- bind_rows(
   )
 ) |>
   mutate(
-    # Chuyển sang % (semi-elasticity: exp(ME)-1)
-    ME_pct = (exp(ME) - 1) * 100
+    # Chuyển sang % (semi-elasticity: base::exp(ME)-1)
+    ME_pct = (base::exp(ME) - 1) * 100
   )
 
 # ── In bảng tóm tắt tại các mốc exp quan trọng ───────────────
@@ -115,8 +113,8 @@ me_table <- me_table |>
     SE   = compute_me_se(exp, female, vcov_hc1),
     CI_lo = ME - 1.96 * SE,
     CI_hi = ME + 1.96 * SE,
-    CI_lo_pct = (exp(CI_lo) - 1) * 100,
-    CI_hi_pct = (exp(CI_hi) - 1) * 100
+    CI_lo_pct = (base::exp(CI_lo) - 1) * 100,
+    CI_hi_pct = (base::exp(CI_hi) - 1) * 100
   ) |>
   ungroup()
 
@@ -136,11 +134,11 @@ ame_female <- mean(ame_df$ME_i[ame_df$female == 1])
 ame_all    <- mean(ame_df$ME_i)
 
 cat(sprintf("  AME (toàn mẫu) : %+.5f → %+.1f%%\n",
-            ame_all, (exp(ame_all) - 1) * 100))
+            ame_all, (base::exp(ame_all) - 1) * 100))
 cat(sprintf("  AME (Nam)      : %+.5f → %+.1f%%\n",
-            ame_male, (exp(ame_male) - 1) * 100))
+            ame_male, (base::exp(ame_male) - 1) * 100))
 cat(sprintf("  AME (Nữ)       : %+.5f → %+.1f%%\n",
-            ame_female, (exp(ame_female) - 1) * 100))
+            ame_female, (base::exp(ame_female) - 1) * 100))
 
 # MEM — Marginal Effect at the Mean
 exp_mean_m <- mean(df_train$exp[df_train$female == 0])
@@ -150,9 +148,9 @@ mem_male   <- b1 + b5 * exp_mean_m + b6 * 0 + b8 * exp_mean_m * 0
 mem_female <- b1 + b5 * exp_mean_f + b6 * 1 + b8 * exp_mean_f * 1
 
 cat(sprintf("\n  MEM (Nam, exp̄=%.1f yr)  : %+.5f → %+.1f%%\n",
-            exp_mean_m, mem_male, (exp(mem_male) - 1) * 100))
+            exp_mean_m, mem_male, (base::exp(mem_male) - 1) * 100))
 cat(sprintf("  MEM (Nữ, exp̄=%.1f yr)   : %+.5f → %+.1f%%\n",
-            exp_mean_f, mem_female, (exp(mem_female) - 1) * 100))
+            exp_mean_f, mem_female, (base::exp(mem_female) - 1) * 100))
 
 # ════════════════════════════════════════════════════════════
 # C. XUẤT BẢNG SỐ TỔNG HỢP (CSV)
@@ -190,8 +188,8 @@ p1 <- ggplot(me_table, aes(x = exp, y = ME_pct,
   # AME reference lines
   geom_point(data = data.frame(
     exp    = c(exp_mean_m, exp_mean_f),
-    ME_pct = c((exp(mem_male) - 1) * 100,
-               (exp(mem_female) - 1) * 100),
+    ME_pct = c((base::exp(mem_male) - 1) * 100,
+               (base::exp(mem_female) - 1) * 100),
     group  = c("Nam", "Nữ")
   ), shape = 21, size = 3, stroke = 1.2, fill = "white") +
   scale_color_manual(values = c("Nam" = "#2166ac", "Nữ" = "#d6604d"),
@@ -294,14 +292,14 @@ cat("   TÓM TẮT MARGINAL EFFECTS — M3    \n")
 cat("====================================\n")
 
 cat(sprintf("\nAME toàn mẫu  : %+.1f%% (mismatch → lương thấp hơn)\n",
-            (exp(ame_all) - 1) * 100))
-cat(sprintf("AME Nam        : %+.1f%%\n", (exp(ame_male) - 1) * 100))
-cat(sprintf("AME Nữ         : %+.1f%%\n", (exp(ame_female) - 1) * 100))
+            (base::exp(ame_all) - 1) * 100))
+cat(sprintf("AME Nam        : %+.1f%%\n", (base::exp(ame_male) - 1) * 100))
+cat(sprintf("AME Nữ         : %+.1f%%\n", (base::exp(ame_female) - 1) * 100))
 
 cat(sprintf("\nMEM Nam (exp̄=%.1f): %+.1f%%\n",
-            exp_mean_m, (exp(mem_male) - 1) * 100))
+            exp_mean_m, (base::exp(mem_male) - 1) * 100))
 cat(sprintf("MEM Nữ  (exp̄=%.1f): %+.1f%%\n",
-            exp_mean_f, (exp(mem_female) - 1) * 100))
+            exp_mean_f, (base::exp(mem_female) - 1) * 100))
 
 # Kiểm tra xem penalty có giảm theo exp không (remedy?)
 me_exp0_m  <- b1
@@ -311,12 +309,12 @@ me_exp10_f <- b1 + b5 * 10 + b6 + b8 * 10
 
 cat("\nKiểm tra REMEDY (penalty giảm khi exp tăng?):\n")
 cat(sprintf("  Nam  exp=0  → exp=10 : %+.1f%% → %+.1f%% [%s]\n",
-            (exp(me_exp0_m) - 1) * 100,
-            (exp(me_exp10_m) - 1) * 100,
+            (base::exp(me_exp0_m) - 1) * 100,
+            (base::exp(me_exp10_m) - 1) * 100,
             ifelse(me_exp10_m > me_exp0_m, "REMEDY ↑", "WIDEN ↓")))
 cat(sprintf("  Nữ   exp=0  → exp=10 : %+.1f%% → %+.1f%% [%s]\n",
-            (exp(me_exp0_f) - 1) * 100,
-            (exp(me_exp10_f) - 1) * 100,
+            (base::exp(me_exp0_f) - 1) * 100,
+            (base::exp(me_exp10_f) - 1) * 100,
             ifelse(me_exp10_f > me_exp0_f, "REMEDY ↑", "WIDEN ↓")))
 
 cat("\n✓ 04_margins.R hoàn thành!\n")
