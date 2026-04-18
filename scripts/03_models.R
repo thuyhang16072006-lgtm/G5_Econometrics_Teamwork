@@ -27,9 +27,11 @@ library(dplyr)
 df_train     <- readRDS("data/processed/df_train.rds")
 df_test      <- readRDS("data/processed/df_test.rds")
 
-# Subsamples từ df_train (đã split, tránh data leakage)
+# Subsamples từ df_train, df_test (đã split, tránh data leakage)
 train_male      <- df_train |> filter(female == 0)
 train_reentrant <- df_train |> filter(re_entrant == 1)
+test_male <- df_test |> filter(female==0)
+test_reentrant <- df_test |> filter(re_entrant==1)
 
 cat("=== Sample sizes ===\n")
 cat(sprintf("df_train        : %d\n", nrow(df_train)))
@@ -194,10 +196,7 @@ cat(sprintf("  Gap R²   : %.4f %s\n", r2_train - r2_test,
             ifelse(r2_train - r2_test > 0.05,
                    "⚠ hơi cao — ghi chú trong báo cáo", "✓ ổn định")))
 
-saveRDS(
-  list(m3 = m3, r2_train = r2_train,
-       r2_test = r2_test, rmse_test = rmse_test),
-  "data/processed/m3.rds"
+saveRDS(m3, "data/processed/m3.rds")
 )
 cat("  ✓ m3.rds xuất xong\n")
 
