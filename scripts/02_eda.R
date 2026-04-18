@@ -28,7 +28,6 @@ df <- readRDS("data/processed/data_processed.rds")
 # wage_monthly used across all descriptive tables (spec requirement)
 df <- df %>%
   mutate(
-    wage_monthly   = exp(ln_wage) * 1000,
     mismatch_label = ifelse(mismatch == 1, "Mismatched", "Matched"),
     gender_lab     = ifelse(female   == 1, "Female",     "Male")
   )
@@ -107,6 +106,7 @@ cat("✓ Table 1 done\n")
 
 table2_data <- df %>%
   group_by(female) %>%
+  mutate(mismatch_f = factor(mismatch))
   summarise(
     wage_matched    = mean(wage_monthly[mismatch == 0], na.rm = TRUE),
     wage_mismatched = mean(wage_monthly[mismatch == 1], na.rm = TRUE),
@@ -370,7 +370,7 @@ fig3 <- ggplot(gap_data,
     color    = "Gender", fill = "Gender",
     caption  = "Note: Positive gap = matched workers earn more. LOESS span = 0.75.\nSource: LFS 2018."
   ) +
-  theme_minimal(base_size = 13) 
+  theme_minimal(base_size = 13) +
   theme(
     legend.position = "bottom",
     plot.title      = element_text(face = "bold", size = 14),
