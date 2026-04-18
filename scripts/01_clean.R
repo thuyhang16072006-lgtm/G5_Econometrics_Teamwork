@@ -59,10 +59,6 @@ print(table(
   mismatch = ifelse(df$C51 == 2, 1, 0),
   female   = ifelse(df$C3  == 2, 1, 0)
 ))
- # Remove observations with negative potential experience
-  filter(exp >= 0, !is.na(exp))
-
-log_n("After removing exp < 0", df)
 
 # ── 3. VARIABLE CONSTRUCTION ─────────────────────────────────
 cat("\n=== VARIABLE CONSTRUCTION ===\n")
@@ -115,6 +111,7 @@ df <- df |>
     # but have low actual experience (exp ≤ 10) relative to their age.
     # Proxy for workers who left the labour market for family reasons
     # and returned. Uses raw C9 (not the binary marital flag).
+    # C9: 2 = married, 3 = widowed, 4 = divorced/separated
     re_entrant = as.integer(
       female == 1 &
         C5    >= 30 &
@@ -129,6 +126,10 @@ df <- df |>
                             labels = c("Male", "Female"))
   ) |>
   
+  # Remove observations with negative potential experience
+  filter(exp >= 0, !is.na(exp))
+
+log_n("After removing exp < 0", df)
 
 # ── 4. WINSORIZE ln_wage (1st – 99th percentile) ─────────────
 q <- quantile(df$ln_wage, c(0.01, 0.99), na.rm = TRUE)
@@ -162,6 +163,7 @@ df <- df |>
     C5,    # age — used in re-entrant filter & summary stats
     C9,    # raw marital status — used in 05_robust.R
     C17,   # raw education code — robustness A1
+    schooling,     # years of schooling (14/16/18) — robustness A1
     C30C,  # VSIC 4-digit — used to verify industry_sub
     C31,   # establishment type — verify sector
     C35,   # employment status — verify wage-worker filter
