@@ -11,7 +11,7 @@
 #            output/figures/Fig3_wage_gap_trend.png
 # =============================================================================
 
-source("00_setup.R")   # packages, OUT_TAB, OUT_FIG, options
+source("scripts/00_setup.R")   # packages, OUT_TAB, OUT_FIG, options
 
 library(dplyr)
 library(tidyr)
@@ -370,7 +370,7 @@ fig3 <- ggplot(gap_data,
     color    = "Gender", fill = "Gender",
     caption  = "Note: Positive gap = matched workers earn more. LOESS span = 0.75.\nSource: LFS 2018."
   ) +
-  theme_minimal(base_size = 13) +
+  theme_minimal(base_size = 13) 
   theme(
     legend.position = "bottom",
     plot.title      = element_text(face = "bold", size = 14),
