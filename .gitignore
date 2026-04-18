@@ -8,6 +8,7 @@ data/
 
 # Output
 *.log
+output/
 
 # OS
 .DS_Store
